@@ -21,6 +21,7 @@
 <button onmousedown="moveDown()">DOWN</button>
 <script>
 
+    var gameInterval;
     var gameField;
 
     var player = {
@@ -45,35 +46,11 @@
             },
             frameCount: 0
         };
-
+        player.y = gameField.canvas.height / 2 - player.height / 2;
         startGame();
     }
     initialize();
 
-    function buildBlockPair() {
-        var minHeight = 20;
-        var maxHeight = 160;
-        var width = 10;
-        var holeHeight = player.height + 20;
-        var bottomBlockHeight = Math.random() * (maxHeight - minHeight) + minHeight;
-        var topBlockHeight = gameField.canvas.height - bottomBlockHeight - holeHeight;
-        return [
-            {
-                width: width,
-                height: topBlockHeight,
-                color: 'red',
-                x: gameField.canvas.width,
-                y: 0
-            },
-            {
-                width: width,
-                height: bottomBlockHeight,
-                color: 'red',
-                x: gameField.canvas.width,
-                y: gameField.canvas.height - bottomBlockHeight
-            }
-        ];
-    }
 
     function updateAndDrawGameField() {
         if (gameField.frameCount == 0 || (gameField.frameCount / 200) % 1 == 0) {
@@ -98,17 +75,29 @@
         drawPlayer();
     }
 
+    function checkCrashes() {
+        var crash = blockerUtils.isCrashed(player, gameField.blocks);
+        if (crash) {
+            stopGame();
+        }
+    }
+
     function refresh() {
         gameField.clear();
         gameField.frameCount++;
         drawPlayer(player.x, player.y);
         updateAndDrawGameField();
+        checkCrashes();
     }
 
     function startGame() {
-        setInterval(function () {
+        gameInterval = setInterval(function () {
             refresh();
         });
+    }
+
+    function stopGame() {
+        clearInterval(gameInterval);
     }
 
     function moveUp() {
