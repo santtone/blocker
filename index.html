@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>blocker</title>
+
+    <style>
+        canvas {
+            border: 1px solid black;
+            background-color: ghostwhite;
+        }
+    </style>
+
+</head>
+<body>
+<script src="blocker-utils.js"></script>
+<canvas id="gameField" width="600" height="300"></canvas>
+<button onmousedown="moveUp()">UP</button>
+<br>
+<button onmousedown="moveDown()">DOWN</button>
+<script>
+
+    var gameField;
+
+    var player = {
+        width: 30,
+        height: 30,
+        x: 0,
+        y: 0,
+        color: 'black',
+        move: function (vector) {
+            this.y = this.y + vector;
+        }
+    };
+
+    function initialize() {
+        var canvas = document.getElementById('gameField');
+        gameField = {
+            canvas: canvas,
+            context: canvas.getContext("2d"),
+            blocks: [],
+            clear: function () {
+                this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+            },
+            frameCount: 0
+        };
+
+        startGame();
+    }
+    initialize();
+
+    function buildBlockPair() {
+        var minHeight = 20;
+        var maxHeight = 160;
+        var width = 10;
+        var holeHeight = player.height + 20;
+        var bottomBlockHeight = Math.random() * (maxHeight - minHeight) + minHeight;
+        var topBlockHeight = gameField.canvas.height - bottomBlockHeight - holeHeight;
+        return [
+            {
+                width: width,
+                height: topBlockHeight,
+                color: 'red',
+                x: gameField.canvas.width,
+                y: 0
+            },
+            {
+                width: width,
+                height: bottomBlockHeight,
+                color: 'red',
+                x: gameField.canvas.width,
+                y: gameField.canvas.height - bottomBlockHeight
+            }
+        ];
+    }
+
+    function updateAndDrawGameField() {
+        if (gameField.frameCount == 0 || (gameField.frameCount / 200) % 1 == 0) {
+            var blockPair = blockerUtils.buildBlockPair(20, 160, 10, gameField.canvas.height, gameField.canvas.width, player.height + 20);
+            gameField.blocks.push(blockPair[0]);
+            gameField.blocks.push(blockPair[1]);
+        }
+        for (var i = 0; i < gameField.blocks.length; i++) {
+            gameField.blocks[i].x -= 1;
+            gameField.context.fillStyle = gameField.blocks[i].color;
+            gameField.context.fillRect(gameField.blocks[i].x, gameField.blocks[i].y, gameField.blocks[i].width, gameField.blocks[i].height);
+        }
+    }
+
+    function drawPlayer() {
+        gameField.context.fillStyle = player.color;
+        gameField.context.fillRect(player.x, player.y, player.width, player.height);
+    }
+
+    function updateAndDrawPlayer(vector) {
+        player.move(vector);
+        drawPlayer();
+    }
+
+    function refresh() {
+        gameField.clear();
+        gameField.frameCount++;
+        drawPlayer(player.x, player.y);
+        updateAndDrawGameField();
+    }
+
+    function startGame() {
+        setInterval(function () {
+            refresh();
+        });
+    }
+
+    function moveUp() {
+        updateAndDrawPlayer(-10);
+    }
+
+    function moveDown() {
+        updateAndDrawPlayer(10);
+    }
+
+</script>
+</body>
+</html>
