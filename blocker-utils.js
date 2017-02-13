@@ -1,4 +1,4 @@
-var blockerUtils = (function () {
+blockerUtils = (function () {
 
     function block(width, height, x, y, color) {
         return {
@@ -13,7 +13,7 @@ var blockerUtils = (function () {
     return {
         buildBlockPair: function (minHeight, maxHeight, width, canvasHeight, canvasWidth, holeHeight) {
             var bottomBlockHeight = Math.random() * (maxHeight - minHeight) + minHeight;
-            var topBlockHeight = gameField.canvas.height - bottomBlockHeight - holeHeight;
+            var topBlockHeight = canvasHeight - bottomBlockHeight - holeHeight;
             var topBlock = block(width, topBlockHeight, canvasWidth, 0);
             var bottomBlock = block(width, bottomBlockHeight, canvasWidth, canvasHeight - bottomBlockHeight);
             return [topBlock, bottomBlock];
