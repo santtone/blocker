@@ -1,21 +1,11 @@
-blockerUtils = (function () {
-
-    function block(width, height, x, y, color) {
-        return {
-            width: width,
-            height: height,
-            color: color || 'red',
-            x: x,
-            y: y
-        }
-    }
+blockerGame.utils = (function () {
 
     return {
         buildBlockPair: function (minHeight, maxHeight, width, canvasHeight, canvasWidth, holeHeight) {
             var bottomBlockHeight = Math.random() * (maxHeight - minHeight) + minHeight;
             var topBlockHeight = canvasHeight - bottomBlockHeight - holeHeight;
-            var topBlock = block(width, topBlockHeight, canvasWidth, 0);
-            var bottomBlock = block(width, bottomBlockHeight, canvasWidth, canvasHeight - bottomBlockHeight);
+            var topBlock = blockerGame.block(width, topBlockHeight, canvasWidth, 0);
+            var bottomBlock = blockerGame.block(width, bottomBlockHeight, canvasWidth, canvasHeight - bottomBlockHeight);
             return [topBlock, bottomBlock];
         },
         isCrashed: function (player, blocks) {

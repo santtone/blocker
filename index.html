@@ -12,32 +12,42 @@
         }
     </style>
 
+    <script>
+        var blockerGame = {};
+    </script>
+
+    <script src="player.js"></script>
+    <script src="game-field.js"></script>
+    <script src="block.js"></script>
+    <script src="blocker.js"></script>
+    <script src="utils.js"></script>
+
+
 </head>
 <body>
-<script src="blocker-utils.js"></script>
-<script src="blocker.js"></script>
+<br>
 <button onmousedown="startGame()">START</button>
+<br>
 <canvas id="gameField" width="600" height="300"></canvas>
+<br>
 <button onmousedown="moveUp()">UP</button>
 <br>
 <button onmousedown="moveDown()">DOWN</button>
 <script>
 
     function moveUp() {
-        blocker.movePlayer(-10);
+        blockerGame.game.movePlayer(-10);
     }
 
     function moveDown() {
-        blocker.movePlayer(10);
+        blockerGame.game.movePlayer(10);
     }
 
-    function startGame(){
-        blocker.startGame();
+    function startGame() {
+        blockerGame.game.startGame(function () {
+            console.log('game over');
+        });
     }
-
-    blocker.onGameOver(function (data){
-        console.log(data);
-    });
 
 </script>
 </body>
